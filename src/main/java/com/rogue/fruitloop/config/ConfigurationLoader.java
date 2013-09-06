@@ -20,7 +20,10 @@ import com.rogue.fruitloop.Fruitloop;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -50,8 +53,11 @@ public class ConfigurationLoader {
     private void loadFile() {
         try {
             if (!config.exists()) {
-                config.createNewFile();
-                // config.loadDefault();
+                try {
+                    this.saveResource("config.txt");
+                } catch (IOException e) {
+                    this.config.createNewFile();
+                }
             }
             FileInputStream fis = new FileInputStream(config);
             InputStreamReader isr = new InputStreamReader(fis);
@@ -88,6 +94,24 @@ public class ConfigurationLoader {
             if (!this.values.containsKey("defaultChans")) { this.values.put("defaultChans", ""); }
         }
         // add other defaults
+    }
+    
+    private void saveResource(String name) throws IOException, FileNotFoundException {
+        File file = new File(name);
+        InputStream is = ConfigurationLoader.class.getResourceAsStream("config.txt");
+        if (is == null) {
+            throw new FileNotFoundException();
+        }
+        if (!file.exists()) {
+            file.createNewFile();
+        }
+        FileOutputStream fos = new FileOutputStream(file);
+        byte[] buffer = new byte[102400];
+        int len;
+        while ((len = is.read(buffer)) != -1) {
+            fos.write(buffer, 0, len);
+        }
+
     }
     
     public String getValue(String key) {
