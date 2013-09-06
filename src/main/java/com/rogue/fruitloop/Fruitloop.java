@@ -17,7 +17,13 @@
 package com.rogue.fruitloop;
 
 import com.rogue.fruitloop.config.ConfigurationLoader;
+import java.io.IOException;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.pircbotx.PircBotX;
+import org.pircbotx.exception.IrcException;
+import org.pircbotx.exception.NickAlreadyInUseException;
 
 /**
  *
@@ -26,24 +32,43 @@ import org.pircbotx.PircBotX;
  * @version 1.0
  */
 public class Fruitloop extends Start {
-    
+
     private final PircBotX bot;
     private final ConfigurationLoader config;
-    
+
     public Fruitloop() {
-        
+
         this.config = new ConfigurationLoader(this);
-        
+
         this.bot = new PircBotX();
         
+        this.begin();
+
     }
-    
+
+    private void begin() {
+        final Map<String, String> conf;
+        synchronized (conf = this.config.getConfigMap()) {
+            try {
+                this.bot.setName(conf.get("nick"));
+                this.bot.setLogin(conf.get("username"));
+                this.bot.connect(conf.get("hostname"), Integer.getInteger(conf.get("port")));
+                this.bot.sendMessage("NickServ", "identify " + conf.get("password"));
+            } catch (IOException ex) {
+                Logger.getLogger(Fruitloop.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (NickAlreadyInUseException ex) {
+                Logger.getLogger(Fruitloop.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IrcException ex) {
+                Logger.getLogger(Fruitloop.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
     public static Fruitloop getProject() {
         return instance;
     }
-    
+
     public PircBotX getBot() {
         return this.bot;
     }
-
 }

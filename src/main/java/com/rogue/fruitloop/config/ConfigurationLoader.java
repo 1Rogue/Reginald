@@ -79,13 +79,23 @@ public class ConfigurationLoader {
     }
     
     private void verifyValues() {
-        if (!values.containsKey("username")) { values.put("username", "Fruitloop"); }
+        synchronized (this.values) {
+            if (!this.values.containsKey("username")) { this.values.put("username", "Fruitloop"); }
+            if (!this.values.containsKey("password")) { this.values.put("password", "password"); }
+            if (!this.values.containsKey("hostname")) { this.values.put("hostname", "irc.esper.net"); }
+            if (!this.values.containsKey("port")) { this.values.put("port", "6667"); }
+            if (!this.values.containsKey("nick")) { this.values.put("nick", "Fruitloop"); }
+        }
         // add other defaults
     }
     
     public String getValue(String key) {
-        synchronized (values) {
-            return values.get(key);
+        synchronized (this.values) {
+            return this.values.get(key);
         }
+    }
+    
+    public Map<String, String> getConfigMap() {
+        return this.values;
     }
 }
