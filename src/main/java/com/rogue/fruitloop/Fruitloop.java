@@ -16,6 +16,7 @@
  */
 package com.rogue.fruitloop;
 
+import com.rogue.fruitloop.config.ConfigurationLoader;
 import org.pircbotx.PircBotX;
 
 /**
@@ -27,10 +28,13 @@ import org.pircbotx.PircBotX;
 public class Fruitloop extends Start {
     
     private final PircBotX bot;
+    private final ConfigurationLoader config;
     
     public Fruitloop() {
         
-        bot = new PircBotX();
+        this.config = new ConfigurationLoader(this);
+        
+        this.bot = new PircBotX();
         
     }
     
@@ -39,7 +43,7 @@ public class Fruitloop extends Start {
     }
     
     public PircBotX getBot() {
-        return bot;
+        return this.bot;
     }
 
 }
