@@ -16,6 +16,8 @@
  */
 package com.rogue.fruitloop;
 
+import org.pircbotx.PircBotX;
+
 /**
  *
  * @since 1.0
@@ -23,5 +25,21 @@ package com.rogue.fruitloop;
  * @version 1.0
  */
 public class Fruitloop extends Start {
+    
+    private final PircBotX bot;
+    
+    public Fruitloop() {
+        
+        bot = new PircBotX();
+        
+    }
+    
+    public static Fruitloop getProject() {
+        return instance;
+    }
+    
+    public PircBotX getBot() {
+        return bot;
+    }
 
 }
