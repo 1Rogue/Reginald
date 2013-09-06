@@ -40,6 +40,7 @@ public class ConfigurationLoader {
     private final Map<String, String> values = new ConcurrentHashMap();
 
     public ConfigurationLoader(Fruitloop project) {
+        
         this.project = project;
 
         this.loadFile();
