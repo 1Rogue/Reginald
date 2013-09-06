@@ -17,6 +17,7 @@
 package com.rogue.fruitloop;
 
 import com.rogue.fruitloop.config.ConfigurationLoader;
+import com.rogue.fruitloop.listener.GithubListener;
 import java.io.IOException;
 import java.util.Map;
 import java.util.logging.Level;
@@ -43,7 +44,8 @@ public class Fruitloop extends Start {
         this.bot = new PircBotX();
         
         this.begin();
-
+        
+        this.bot.getListenerManager().addListener(new GithubListener(this));
     }
 
     private void begin() {
