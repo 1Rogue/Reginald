@@ -52,8 +52,11 @@ public class Fruitloop extends Start {
             try {
                 this.bot.setName(conf.get("nick"));
                 this.bot.setLogin(conf.get("username"));
-                this.bot.connect(conf.get("hostname"), Integer.getInteger(conf.get("port")));
+                this.bot.connect(conf.get("hostname"), Integer.parseInt(conf.get("port")));
                 this.bot.sendMessage("NickServ", "identify " + conf.get("password"));
+                for (String chan : conf.get("defaultChans").split(",")) {
+                    this.bot.joinChannel(chan);
+                }
             } catch (IOException ex) {
                 Logger.getLogger(Fruitloop.class.getName()).log(Level.SEVERE, null, ex);
             } catch (NickAlreadyInUseException ex) {

@@ -85,6 +85,7 @@ public class ConfigurationLoader {
             if (!this.values.containsKey("hostname")) { this.values.put("hostname", "irc.esper.net"); }
             if (!this.values.containsKey("port")) { this.values.put("port", "6667"); }
             if (!this.values.containsKey("nick")) { this.values.put("nick", "Fruitloop"); }
+            if (!this.values.containsKey("defaultChans")) { this.values.put("defaultChans", ""); }
         }
         // add other defaults
     }
