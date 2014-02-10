@@ -14,9 +14,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.rogue.fruitloop.config;
+package com.rogue.reginald.config;
 
-import com.rogue.fruitloop.Fruitloop;
+import com.rogue.reginald.Reginald;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -38,11 +38,11 @@ import java.util.logging.Logger;
  */
 public class ConfigurationLoader {
 
-    private final Fruitloop project;
+    private final Reginald project;
     private final File config = new File("config.txt");
     private final Map<String, String> values = new ConcurrentHashMap();
 
-    public ConfigurationLoader(Fruitloop project) {
+    public ConfigurationLoader(Reginald project) {
         
         this.project = project;
 

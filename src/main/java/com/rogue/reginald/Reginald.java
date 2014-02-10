@@ -14,10 +14,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.rogue.fruitloop;
+package com.rogue.reginald;
 
-import com.rogue.fruitloop.config.ConfigurationLoader;
-import com.rogue.fruitloop.listener.GithubListener;
+import com.rogue.reginald.config.ConfigurationLoader;
+import com.rogue.reginald.listener.GithubListener;
 import java.io.IOException;
 import java.util.Map;
 import java.util.logging.Level;
@@ -32,12 +32,12 @@ import org.pircbotx.exception.NickAlreadyInUseException;
  * @author 1Rogue
  * @version 1.0
  */
-public class Fruitloop extends Start {
+public class Reginald extends Start {
 
     private final PircBotX bot;
     private final ConfigurationLoader config;
 
-    public Fruitloop() {
+    public Reginald() {
 
         this.config = new ConfigurationLoader(this);
 
@@ -60,16 +60,16 @@ public class Fruitloop extends Start {
                     this.bot.joinChannel(chan);
                 }
             } catch (IOException ex) {
-                Logger.getLogger(Fruitloop.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(Reginald.class.getName()).log(Level.SEVERE, null, ex);
             } catch (NickAlreadyInUseException ex) {
-                Logger.getLogger(Fruitloop.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(Reginald.class.getName()).log(Level.SEVERE, null, ex);
             } catch (IrcException ex) {
-                Logger.getLogger(Fruitloop.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(Reginald.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
 
-    public static Fruitloop getProject() {
+    public static Reginald getProject() {
         return instance;
     }
 

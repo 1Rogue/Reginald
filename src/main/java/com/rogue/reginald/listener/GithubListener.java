@@ -14,9 +14,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.rogue.fruitloop.listener;
+package com.rogue.reginald.listener;
 
-import com.rogue.fruitloop.Fruitloop;
+import com.rogue.reginald.Reginald;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.MessageEvent;
 
@@ -28,9 +28,9 @@ import org.pircbotx.hooks.events.MessageEvent;
  */
 public class GithubListener extends ListenerAdapter {
 
-    private final Fruitloop project;
+    private final Reginald project;
 
-    public GithubListener(Fruitloop project) {
+    public GithubListener(Reginald project) {
         this.project = project;
     }
 
