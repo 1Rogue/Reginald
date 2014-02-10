@@ -3,11 +3,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.rogue</groupId>
-    <artifactId>Fruitloop</artifactId>
+    <artifactId>Reginald</artifactId>
     <version>1.0</version>
     <packaging>jar</packaging>
 
-    <name>Fruitloop</name>
+    <name>Reginald</name>
     <url>http://maven.apache.org</url>
 
     <properties>
