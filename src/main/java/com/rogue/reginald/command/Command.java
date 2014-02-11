@@ -16,9 +16,11 @@
  */
 package com.rogue.reginald.command;
 
+import com.rogue.reginald.Reginald;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import org.pircbotx.Channel;
 import org.pircbotx.User;
 
 /**
@@ -27,19 +29,33 @@ import org.pircbotx.User;
  * @author 1Rogue
  * @version
  */
-public class Command {
+public final class Command {
     
     private final User user;
+    private final Channel chan;
     private final String name;
     private final String[] arguments;
+    private final boolean publish;
     
-    public Command(User user, String rawCommand) {
+    public Command(User user, Channel chan, String rawCommand) {
+        if (rawCommand == null || rawCommand.equalsIgnoreCase("")) {
+            throw new IllegalArgumentException("Null/Empty string!");
+        }
         this.user = user;
+        this.chan = chan;
         String[] rawArgs = this.getSplitArguments(rawCommand);
         this.name = rawArgs[0];
         if (rawArgs.length > 1) {
-            this.arguments = Arrays.copyOfRange(rawArgs, 1, rawArgs.length);
+            rawArgs = Arrays.copyOfRange(rawArgs, 1, rawArgs.length);
+            List<String> list = Arrays.asList(rawArgs);
+            this.publish = list.contains("-p");
+            if (this.publish) {
+                list = new ArrayList<>(list);
+                list.remove("-p");
+            }
+            this.arguments = list.toArray(new String[list.size()]);
         } else {
+            this.publish = false;
             this.arguments = new String[0];
         }
     }
@@ -49,7 +65,7 @@ public class Command {
         if (raw.contains("\"")) {
             char[] broken = raw.trim().toCharArray();
             StringBuilder usb = new StringBuilder();
-            List<String> newargs = new ArrayList();
+            List<String> newargs = new ArrayList<>();
             boolean inquotes = false;
             for (int i = 0; i < broken.length; i++) {
                 if (broken[i] == '"') {
@@ -61,6 +77,7 @@ public class Command {
                     usb.append(broken[i]);
                 }
             }
+            newargs.add(usb.toString());
 
             return newargs.toArray(new String[newargs.size()]);
         } else {
@@ -78,6 +95,22 @@ public class Command {
     
     public String[] getArgs() {
         return this.arguments;
+    }
+    
+    public Channel getChannel() {
+        return this.chan;
+    }
+    
+    public boolean isPublic() {
+        return this.publish;
+    }
+    
+    public void sendMessage(String message) {
+        if (this.isPublic()) {
+            Reginald.getProject().getBot().sendNotice(this.getUser(), message);
+        } else {
+            this.getChannel().sendMessage(this.getUser() + ": " + message);
+        }
     }
 
 }

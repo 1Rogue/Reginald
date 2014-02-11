@@ -37,18 +37,18 @@ public class CommandHandler {
         CommandBase[] cmds = new CommandBase[]{};
         
         for (CommandBase cmd : cmds) {
-            this.commands.put(cmd.getName(), cmd);
+            this.commands.put(cmd.getName().toLowerCase(), cmd);
         }
     }
     
     public boolean dispatchCommand(Command cmd) {
-        CommandBase command = this.commands.get(cmd.getName());
-        if (command == null ) {
-            //TODO: Send notice to user
+        CommandBase command = this.commands.get(cmd.getName().toLowerCase());
+        if (command == null) {
+            cmd.sendMessage("No command found for '" + cmd.getName() + "'.");
         } else {
             if (!command.execute(cmd)) {
-                //send usage | "Usage: " + command.getUsage();
-                //send info  | command.info()
+                cmd.sendMessage("Usage: " + command.getUsage());
+                cmd.sendMessage(command.info());
             } else {
                 return true;
             }
