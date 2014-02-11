@@ -17,7 +17,7 @@
 package com.rogue.reginald;
 
 import com.rogue.reginald.config.ConfigurationLoader;
-import com.rogue.reginald.listener.GithubListener;
+import com.rogue.reginald.listener.ListenerHandler;
 import java.io.IOException;
 import java.util.Map;
 import java.util.logging.Level;
@@ -36,7 +36,14 @@ public class Reginald extends Start {
 
     private final PircBotX bot;
     private final ConfigurationLoader config;
+    private final ListenerHandler listener;
 
+    /**
+     * {@link Reginald} constructor
+     * 
+     * @since 1.0.0
+     * @version 1.0.0
+     */
     public Reginald() {
 
         this.config = new ConfigurationLoader(this);
@@ -45,7 +52,8 @@ public class Reginald extends Start {
         
         this.begin();
         
-        this.bot.getListenerManager().addListener(new GithubListener(this));
+        this.listener = new ListenerHandler(this);
+        
     }
 
     private void begin() {

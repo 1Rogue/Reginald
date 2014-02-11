@@ -14,29 +14,25 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.rogue.reginald.listener;
+package com.rogue.reginald.listener.listeners;
 
 import com.rogue.reginald.Reginald;
 import org.pircbotx.hooks.ListenerAdapter;
-import org.pircbotx.hooks.events.MessageEvent;
 
 /**
- *
- * @since 1.0
+ * 
+ * @since 1.0.0
  * @author 1Rogue
- * @version 1.0
+ * @version 1.0.0
  */
-public class GithubListener extends ListenerAdapter {
+public abstract class ListenerBase extends ListenerAdapter {
+    
+    protected final Reginald project;
 
-    private final Reginald project;
-
-    public GithubListener(Reginald project) {
+    public ListenerBase(Reginald project) {
         this.project = project;
     }
 
-    public void onMessage(MessageEvent event) {
-        if (event.getUser().getNick().equals("RogueGithub")) {
-            this.project.getBot().sendMessage("#Rogue", event.getMessage());
-        }
-    }
+    public abstract String getName();
+
 }
