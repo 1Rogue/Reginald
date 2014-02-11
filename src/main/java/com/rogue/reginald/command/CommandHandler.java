@@ -46,12 +46,7 @@ public class CommandHandler {
         if (command == null) {
             cmd.sendMessage("No command found for '" + cmd.getName() + "'.");
         } else {
-            if (!command.execute(cmd)) {
-                cmd.sendMessage("Usage: " + command.getUsage());
-                cmd.sendMessage(command.info());
-            } else {
-                return true;
-            }
+            command.execute(cmd, cmd.getArgs()).handle(cmd, command);
         }
         return false;
     }

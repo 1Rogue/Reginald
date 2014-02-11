@@ -16,6 +16,8 @@
  */
 package com.rogue.reginald.command;
 
+import com.rogue.reginald.Reginald;
+
 /**
  *
  * @since 1.0.0
@@ -23,6 +25,12 @@ package com.rogue.reginald.command;
  * @version 1.0.0
  */
 public abstract class CommandBase {
+    
+    protected final Reginald project;
+    
+    public CommandBase(Reginald project) {
+        this.project = project;
+    }
 
     /**
      * Executes a relevant command grabbed from the CommandHandler.
@@ -30,11 +38,12 @@ public abstract class CommandBase {
      * @since 1.0.0
      * @version 1.0.0
      *
-     * @param command The command being executed
+     * @param cmd The command being executed
+     * @param args The command arguments
      *
-     * @return true on success, false if failed
+     * @return CommandStatus of the command execution
      */
-    public abstract boolean execute(Command command);
+    public abstract CommandStatus execute(Command cmd, String[] args);
 
     /**
      * Returns the name of the command, used for storing a hashmap of the
