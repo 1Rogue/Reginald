@@ -46,12 +46,15 @@ public class Reginald extends Start {
      */
     public Reginald() {
 
+        //onLoad
         this.config = new ConfigurationLoader(this);
 
         this.bot = new PircBotX();
         
+        //begin
         this.begin();
         
+        //onEnable
         this.listener = new ListenerHandler(this);
         
     }
