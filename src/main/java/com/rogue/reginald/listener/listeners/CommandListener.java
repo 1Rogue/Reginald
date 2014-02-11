@@ -34,10 +34,10 @@ public class CommandListener extends ListenerBase {
 
     @Override
     public void onMessage(MessageEvent event) {
-        if (event.getMessage().startsWith(this.project.getConfig().getValue("command-prefix"))) {
-            try {
-                this.project.getCommandHandler().dispatchCommand(new Command(event.getUser(), event.getChannel(), event.getMessage()));
-            } catch (IllegalArgumentException ex) {} //Empty command string
+        String prefix = this.project.getConfig().getValue("command-prefix");
+        if (event.getMessage().startsWith(prefix) && event.getMessage().length() == 1) {
+            this.project.getCommandHandler().dispatchCommand(
+                    new Command(event.getUser(), event.getChannel(), event.getMessage()));
         }
     }
 

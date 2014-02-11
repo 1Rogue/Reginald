@@ -38,9 +38,6 @@ public final class Command {
     private final boolean publish;
     
     public Command(User user, Channel chan, String rawCommand) {
-        if (rawCommand == null || rawCommand.equalsIgnoreCase("")) {
-            throw new IllegalArgumentException("Null/Empty string!");
-        }
         this.user = user;
         this.chan = chan;
         String[] rawArgs = this.getSplitArguments(rawCommand);
