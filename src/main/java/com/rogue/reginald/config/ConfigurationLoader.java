@@ -25,6 +25,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
@@ -92,6 +93,7 @@ public class ConfigurationLoader {
             if (!this.values.containsKey("port")) { this.values.put("port", "6667"); }
             if (!this.values.containsKey("nick")) { this.values.put("nick", "Fruitloop"); }
             if (!this.values.containsKey("defaultChans")) { this.values.put("defaultChans", ""); }
+            if (!this.values.containsKey("command-prefix")) { this.values.put("command-prefix", "$"); }
         }
         // add other defaults
     }
@@ -121,6 +123,8 @@ public class ConfigurationLoader {
     }
     
     public Map<String, String> getConfigMap() {
-        return this.values;
+        return Collections.unmodifiableMap(this.values);
     }
+    
+    public void save(){} //TODO: write
 }

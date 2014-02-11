@@ -17,29 +17,34 @@
 package com.rogue.reginald.listener.listeners;
 
 import com.rogue.reginald.Reginald;
+import com.rogue.reginald.command.Command;
 import org.pircbotx.hooks.events.MessageEvent;
 
 /**
  *
- * @since 1.0
+ * @since 1.0.0
  * @author 1Rogue
- * @version 1.0
+ * @version 1.0.0
  */
-public class GithubListener extends ListenerBase {
+public class CommandListener extends ListenerBase {
 
-    public GithubListener(Reginald project) {
+    public CommandListener(Reginald project) {
         super(project);
     }
 
     @Override
     public void onMessage(MessageEvent event) {
-        if (event.getUser().getNick().equals("RogueGithub")) {
-            this.project.getBot().sendMessage("#Rogue", event.getMessage());
+        if (event.getMessage().startsWith(
+                this.project.getConfig().getValue("command-prefix"))) {
+
+            this.project.getCommandHandler().dispatchCommand(
+                    new Command(event.getUser(), event.getMessage()));
+
         }
     }
 
     @Override
     public String getName() {
-        return "github";
+        return "command";
     }
 }

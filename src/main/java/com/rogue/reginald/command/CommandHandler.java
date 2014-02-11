@@ -14,37 +14,46 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.rogue.reginald.listener;
+package com.rogue.reginald.command;
 
-import com.rogue.reginald.listener.listeners.*;
 import com.rogue.reginald.Reginald;
 import java.util.HashMap;
 import java.util.Map;
-import org.pircbotx.hooks.managers.ListenerManager;
 
 /**
  *
- * @since
+ * @since 1.0.0
  * @author 1Rogue
- * @version
+ * @version 1.0.0
  */
-public class ListenerHandler {
+public class CommandHandler {
     
     private final Reginald project;
-    private final Map<String, ListenerBase> listeners = new HashMap<>();
+    private final Map<String, CommandBase> commands = new HashMap<>();
     
-    public ListenerHandler(Reginald project) {
+    public CommandHandler(Reginald project) {
         this.project = project;
         
-        ListenerBase[] list = new ListenerBase[] {
-            new CommandListener(this.project)
-        };
+        CommandBase[] cmds = new CommandBase[]{};
         
-        ListenerManager lm = this.project.getBot().getListenerManager();
-        for (ListenerBase l : list) {
-            this.listeners.put(l.getName(), l);
-            lm.addListener(l);
+        for (CommandBase cmd : cmds) {
+            this.commands.put(cmd.getName(), cmd);
         }
     }
-
+    
+    public boolean dispatchCommand(Command cmd) {
+        CommandBase command = this.commands.get(cmd.getName());
+        if (command == null ) {
+            //TODO: Send notice to user
+        } else {
+            if (!command.execute(cmd)) {
+                //send usage | "Usage: " + command.getUsage();
+                //send info  | command.info()
+            } else {
+                return true;
+            }
+        }
+        return false;
+    }
+    
 }

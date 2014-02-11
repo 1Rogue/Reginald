@@ -16,6 +16,7 @@
  */
 package com.rogue.reginald;
 
+import com.rogue.reginald.command.CommandHandler;
 import com.rogue.reginald.config.ConfigurationLoader;
 import com.rogue.reginald.listener.ListenerHandler;
 import java.io.IOException;
@@ -37,6 +38,7 @@ public class Reginald extends Start {
     private final PircBotX bot;
     private final ConfigurationLoader config;
     private final ListenerHandler listener;
+    private final CommandHandler command;
 
     /**
      * {@link Reginald} constructor
@@ -57,6 +59,16 @@ public class Reginald extends Start {
         //onEnable
         this.listener = new ListenerHandler(this);
         
+        this.command = new CommandHandler(this);
+        
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+        
+            @Override
+            public void run() {
+                config.save();
+            }
+            
+        });
     }
 
     private void begin() {
@@ -86,5 +98,13 @@ public class Reginald extends Start {
 
     public PircBotX getBot() {
         return this.bot;
+    }
+    
+    public ConfigurationLoader getConfig() {
+        return this.config;
+    }
+    
+    public CommandHandler getCommandHandler() {
+        return this.command;
     }
 }
