@@ -17,6 +17,8 @@
 package com.rogue.reginald.command;
 
 import com.rogue.reginald.Reginald;
+import com.rogue.reginald.permission.Permission;
+import org.pircbotx.User;
 
 /**
  *
@@ -77,5 +79,15 @@ public abstract class CommandBase {
      * @return A small string about the command
      */
     public abstract String info();
+    
+    protected final CommandStatus verify(User user, Permission perm) {
+        if (!user.isVerified()) {
+            return CommandStatus.UNVERIFIED;
+        }
+        if (!this.project.getPermissionsManager().hasPermission(user, perm)) {
+            return CommandStatus.NO_PERMISSION;
+        }
+        return CommandStatus.SUCCESS;
+    }
 
 }

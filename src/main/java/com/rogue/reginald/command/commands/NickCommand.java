@@ -20,6 +20,7 @@ import com.rogue.reginald.Reginald;
 import com.rogue.reginald.command.Command;
 import com.rogue.reginald.command.CommandBase;
 import com.rogue.reginald.command.CommandStatus;
+import com.rogue.reginald.permission.Permission;
 
 /**
  *
@@ -38,8 +39,13 @@ public class NickCommand extends CommandBase {
         if (args.length < 1) {
             return CommandStatus.BAD_ARGS;
         }
-        this.project.getBot().changeNick(args[0]);
-        return CommandStatus.SUCCESS;
+        CommandStatus stat = this.verify(cmd.getUser(), Permission.NICK);
+        if (stat == CommandStatus.SUCCESS) {
+            this.project.getBot().changeNick(args[0]);
+            return CommandStatus.SUCCESS;
+        } else {
+            return stat;
+        }
     }
 
     @Override
@@ -54,7 +60,7 @@ public class NickCommand extends CommandBase {
 
     @Override
     public String info() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return "Changes the nick that the bot uses";
     }
     
     

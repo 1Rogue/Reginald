@@ -19,6 +19,7 @@ package com.rogue.reginald;
 import com.rogue.reginald.command.CommandHandler;
 import com.rogue.reginald.config.ConfigurationLoader;
 import com.rogue.reginald.listener.ListenerHandler;
+import com.rogue.reginald.permission.PermissionsManager;
 import java.io.IOException;
 import java.util.Map;
 import java.util.logging.Level;
@@ -39,6 +40,7 @@ public class Reginald extends Start {
     private final ConfigurationLoader config;
     private final ListenerHandler listener;
     private final CommandHandler command;
+    private final PermissionsManager permissions;
 
     /**
      * {@link Reginald} constructor
@@ -57,6 +59,8 @@ public class Reginald extends Start {
         this.begin();
         
         //onEnable
+        this.permissions = new PermissionsManager(this);
+        
         this.listener = new ListenerHandler(this);
         
         this.command = new CommandHandler(this);
@@ -106,5 +110,9 @@ public class Reginald extends Start {
     
     public CommandHandler getCommandHandler() {
         return this.command;
+    }
+    
+    public PermissionsManager getPermissionsManager() {
+        return this.permissions;
     }
 }

@@ -27,7 +27,8 @@ public enum CommandStatus {
     SUCCESS,
     FAILED,
     BAD_ARGS,
-    NO_PERMISSION;
+    NO_PERMISSION,
+    UNVERIFIED;
     
     private String message;
     
@@ -45,6 +46,8 @@ public enum CommandStatus {
                 cmd.sendMessage(base.info());
             case NO_PERMISSION:
                 cmd.sendMessage("You do not have permission for this command!");
+            case UNVERIFIED:
+                cmd.sendMessage("Please authenticate your user with NickServ before using this command");
             default:
                 if (message != null) {
                     cmd.sendMessage("Message from internal class (Report to developer):");

@@ -1,6 +1,7 @@
-username=Fruitloop
+username=Reginald
 password=password
-hostname=irc.esper.net
+hostname=irc.freenode.net
 port=6667
-nick=Fruitloop
-defaultChans=
+nick=Reginald
+defaultChans=#spam
+command-prefix=$
