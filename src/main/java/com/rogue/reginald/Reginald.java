@@ -86,11 +86,7 @@ public class Reginald extends Start {
                 for (String chan : conf.get("defaultChans").split(",")) {
                     this.bot.joinChannel(chan);
                 }
-            } catch (IOException ex) {
-                Logger.getLogger(Reginald.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (NickAlreadyInUseException ex) {
-                Logger.getLogger(Reginald.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IrcException ex) {
+            } catch (IOException | NickAlreadyInUseException | IrcException ex) {
                 Logger.getLogger(Reginald.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
