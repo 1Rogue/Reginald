@@ -41,7 +41,7 @@ public class NickCommand extends CommandBase {
         }
         CommandStatus stat = this.verify(cmd.getUser(), Permission.NICK);
         if (stat == CommandStatus.SUCCESS) {
-            this.project.getBot().changeNick(args[0]);
+            this.project.getBot().sendIRC().changeNick(args[0]);
             return CommandStatus.SUCCESS;
         } else {
             return stat;

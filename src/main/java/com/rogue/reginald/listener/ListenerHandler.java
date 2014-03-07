@@ -18,9 +18,10 @@ package com.rogue.reginald.listener;
 
 import com.rogue.reginald.listener.listeners.*;
 import com.rogue.reginald.Reginald;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import org.pircbotx.hooks.managers.ListenerManager;
 
 /**
  *
@@ -40,11 +41,17 @@ public class ListenerHandler {
             new CommandListener(this.project)
         };
         
-        ListenerManager lm = this.project.getBot().getListenerManager();
         for (ListenerBase l : list) {
             this.listeners.put(l.getName(), l);
-            lm.addListener(l);
         }
+    }
+    
+    public Collection<ListenerBase> getListeners() {
+        return Collections.unmodifiableCollection(this.listeners.values());
+    }
+    
+    public ListenerBase getListener(String name) {
+        return this.listeners.get(name);
     }
 
 }

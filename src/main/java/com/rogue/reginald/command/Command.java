@@ -104,9 +104,9 @@ public final class Command {
     
     public void sendMessage(String message) {
         if (this.isPublic()) {
-            Reginald.getProject().getBot().sendNotice(this.getUser(), message);
+            this.getUser().send().notice(message);
         } else {
-            this.getChannel().sendMessage(this.getUser() + ": " + message);
+            this.getChannel().send().message(this.getUser() + ": " + message);
         }
     }
 

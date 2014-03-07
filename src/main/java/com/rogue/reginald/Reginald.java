@@ -19,14 +19,11 @@ package com.rogue.reginald;
 import com.rogue.reginald.command.CommandHandler;
 import com.rogue.reginald.config.ConfigurationLoader;
 import com.rogue.reginald.listener.ListenerHandler;
+import com.rogue.reginald.listener.listeners.ListenerBase;
 import com.rogue.reginald.permission.PermissionsManager;
-import java.io.IOException;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
-import org.pircbotx.exception.IrcException;
-import org.pircbotx.exception.NickAlreadyInUseException;
 
 /**
  *
@@ -34,9 +31,9 @@ import org.pircbotx.exception.NickAlreadyInUseException;
  * @author 1Rogue
  * @version 1.0
  */
-public class Reginald extends Start {
+public final class Reginald extends Start {
 
-    private final PircBotX bot;
+    private final BotProxy bot;
     private final ConfigurationLoader config;
     private final ListenerHandler listener;
     private final CommandHandler command;
@@ -52,11 +49,6 @@ public class Reginald extends Start {
 
         //onLoad
         this.config = new ConfigurationLoader(this);
-
-        this.bot = new PircBotX();
-        
-        //begin
-        this.begin();
         
         //onEnable
         this.permissions = new PermissionsManager(this);
@@ -64,6 +56,29 @@ public class Reginald extends Start {
         this.listener = new ListenerHandler(this);
         
         this.command = new CommandHandler(this);
+        
+        final Map<String, String> conf;
+        Configuration c;
+        synchronized (conf = this.config.getConfigMap()) {
+            Configuration.Builder build = new Configuration.Builder<>()
+                    .setName(conf.get("nick"))
+                    .setLogin(conf.get("uesrname"))
+                    .setServerHostname(conf.get("hostname"))
+                    .setServerPort(Integer.parseInt(conf.get("port")))
+                    .setNickservPassword(conf.get("password"))
+                    .setAutoNickChange(true);
+            for (String chan : conf.get("defaultChans").split(",")) {
+                build.addAutoJoinChannel(chan);
+            }
+            for (ListenerBase base : this.getListenerHandler().getListeners()) {
+                build.addListener(base);
+            }
+            c = build.buildConfiguration();
+        }
+        
+        this.bot = new BotProxy(c);
+        
+        this.bot.connect();
         
         Runtime.getRuntime().addShutdownHook(new Thread() {
         
@@ -73,27 +88,6 @@ public class Reginald extends Start {
             }
             
         });
-    }
-
-    private void begin() {
-        final Map<String, String> conf;
-        synchronized (conf = this.config.getConfigMap()) {
-            try {
-                this.bot.setName(conf.get("nick"));
-                this.bot.setLogin(conf.get("username"));
-                this.bot.connect(conf.get("hostname"), Integer.parseInt(conf.get("port")));
-                this.bot.sendMessage("NickServ", "identify " + conf.get("password"));
-                for (String chan : conf.get("defaultChans").split(",")) {
-                    this.bot.joinChannel(chan);
-                }
-            } catch (IOException ex) {
-                Logger.getLogger(Reginald.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (NickAlreadyInUseException ex) {
-                Logger.getLogger(Reginald.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IrcException ex) {
-                Logger.getLogger(Reginald.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
     }
 
     public static Reginald getProject() {
@@ -115,4 +109,9 @@ public class Reginald extends Start {
     public PermissionsManager getPermissionsManager() {
         return this.permissions;
     }
+    
+    public ListenerHandler getListenerHandler() {
+        return this.listener;
+    }
+    
 }
