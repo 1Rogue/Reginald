@@ -17,6 +17,10 @@
 package com.rogue.reginald.command;
 
 import com.rogue.reginald.Reginald;
+import com.rogue.reginald.command.commands.NickCommand;
+import com.rogue.reginald.command.commands.ShowTellsCommand;
+import com.rogue.reginald.command.commands.TellCommand;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,7 +38,11 @@ public class CommandHandler {
     public CommandHandler(Reginald project) {
         this.project = project;
         
-        CommandBase[] cmds = new CommandBase[]{};
+        CommandBase[] cmds = new CommandBase[]{
+                new NickCommand(this.project),
+                new TellCommand(this.project),
+                new ShowTellsCommand(this.project)
+        };
         
         for (CommandBase cmd : cmds) {
             this.commands.put(cmd.getName().toLowerCase(), cmd);

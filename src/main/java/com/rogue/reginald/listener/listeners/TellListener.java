@@ -14,33 +14,32 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.rogue.reginald.permission;
+package com.rogue.reginald.listener.listeners;
+
+import com.rogue.reginald.Reginald;
+import com.rogue.reginald.listener.ListenerBase;
+import org.pircbotx.hooks.events.MessageEvent;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
+ * Handles messaging notifications
  *
  * @since 1.0.0
  * @author 1Rogue
  * @version 1.0.0
  */
-public enum Permission {
+public class TellListener extends ListenerBase {
 
-    NICK("nick", false),
-    TELL("tell", true),
-    SHOW_TELLS("showtell", true);
-    
-    private final String node;
-    private final boolean def;
-    
-    private Permission(String node, boolean def) {
-        this.node = node;
-        this.def = def;
-    }
-    
-    public String getNode() {
-        return this.node;
+    private final Map<String, Long> times = new HashMap<>();
+
+    public TellListener(Reginald project) {
+        super(project);
     }
 
-    public boolean defaultTrue() {
-        return this.def;
-    }
+    public void onMessage(MessageEvent event) {
+
+}
+
 }

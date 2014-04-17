@@ -19,9 +19,12 @@ package com.rogue.reginald;
 import com.rogue.reginald.command.CommandHandler;
 import com.rogue.reginald.config.ConfigurationLoader;
 import com.rogue.reginald.listener.ListenerHandler;
-import com.rogue.reginald.listener.listeners.ListenerBase;
+import com.rogue.reginald.listener.ListenerBase;
+import com.rogue.reginald.message.MessageHandler;
 import com.rogue.reginald.permission.PermissionsManager;
 import java.util.Map;
+import java.util.logging.Logger;
+
 import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
 
@@ -38,6 +41,8 @@ public final class Reginald extends Start {
     private final ListenerHandler listener;
     private final CommandHandler command;
     private final PermissionsManager permissions;
+    private final MessageHandler message;
+    private final Logger log;
 
     /**
      * {@link Reginald} constructor
@@ -48,15 +53,19 @@ public final class Reginald extends Start {
     public Reginald() {
 
         //onLoad
+        this.log = Logger.getLogger(this.getClass().getName());
+
         this.config = new ConfigurationLoader(this);
-        
+
         //onEnable
         this.permissions = new PermissionsManager(this);
-        
+
+        this.message = new MessageHandler(this);
+
         this.listener = new ListenerHandler(this);
-        
+
         this.command = new CommandHandler(this);
-        
+
         final Map<String, String> conf;
         Configuration c;
         synchronized (conf = this.config.getConfigMap()) {
@@ -75,19 +84,20 @@ public final class Reginald extends Start {
             }
             c = build.buildConfiguration();
         }
-        
+
         this.bot = new BotProxy(c);
-        
+
         this.bot.connect();
-        
+
         Runtime.getRuntime().addShutdownHook(new Thread() {
-        
+
             @Override
             public void run() {
                 config.save();
             }
-            
+
         });
+
     }
 
     public static Reginald getProject() {
@@ -109,9 +119,16 @@ public final class Reginald extends Start {
     public PermissionsManager getPermissionsManager() {
         return this.permissions;
     }
-    
+
+    public MessageHandler getMessageHandler() {
+        return this.message;
+    }
+
     public ListenerHandler getListenerHandler() {
         return this.listener;
     }
-    
+
+    public Logger getLogger() {
+        return this.log;
+    }
 }

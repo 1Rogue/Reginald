@@ -22,45 +22,52 @@ import com.rogue.reginald.command.CommandBase;
 import com.rogue.reginald.command.CommandStatus;
 import com.rogue.reginald.permission.Permission;
 
+import java.util.Arrays;
+
 /**
+ * Creates a new message to deliver to an irc target
  *
  * @since 1.0.0
  * @author 1Rogue
  * @version 1.0.0
  */
-public class NickCommand extends CommandBase {
-    
-    public NickCommand(Reginald project) {
+public class TellCommand extends CommandBase {
+
+    public TellCommand(Reginald project) {
         super(project);
     }
 
     @Override
     public CommandStatus execute(Command cmd, String[] args) {
-        if (args.length < 1) {
+        if (args.length < 2) {
             return CommandStatus.BAD_ARGS;
         }
-        CommandStatus stat = this.verify(cmd.getUser(), Permission.NICK);
+        CommandStatus stat = this.verify(cmd.getUser(), Permission.TELL);
         if (stat == CommandStatus.SUCCESS) {
-            this.project.getBot().sendIRC().changeNick(args[0]);
+            String target = args[0];
+            args = Arrays.copyOfRange(args, 1, args.length);
+            StringBuilder sb = new StringBuilder();
+            boolean first = true;
+            for (String s : args) {
+                if (first) {
+                    first = false;
+                } else {
+                    sb.append(" ");
+                }
+                sb.append(s);
+            }
+            this.project.getMessageHandler().newMessage(cmd.getUser().getNick(), args[0], sb.toString(), cmd.getChannel().getName());
         }
         return stat;
     }
 
     @Override
     public String getName() {
-        return "nick";
-    }
-    
-    @Override
-    public String getUsage() {
-        return super.getUsage() + " <new-name>";
+        return "tell";
     }
 
     @Override
     public String info() {
-        return "Changes the nick that the bot uses";
+        return "Sends a message to an IRC recipient";
     }
-    
-    
-
 }

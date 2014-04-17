@@ -4,7 +4,7 @@
 
     <groupId>com.rogue</groupId>
     <artifactId>Reginald</artifactId>
-    <version>1.0</version>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
 
     <name>Reginald</name>
@@ -27,13 +27,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>2.3.2</version>
                 <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
-                    <archive>
-                        <manifest>
-                            <mainClass>com.rogue.fruitloop.Start</mainClass>
-                        </manifest>
-                    </archive>
+                    <source>1.8</source>
+                    <target>1.8</target>
                 </configuration>
             </plugin>
             <plugin>
@@ -47,10 +42,10 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
-                            <finalName>Fruitloop-${project.version}</finalName>
+                            <finalName>${project.name}-${project.version}</finalName>
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>com.rogue.fruitloop.Start</mainClass>
+                                    <mainClass>com.rogue.reginald.Start</mainClass>
                                 </transformer>
                             </transformers>
                             <filters>

@@ -18,6 +18,7 @@ package com.rogue.reginald.listener.listeners;
 
 import com.rogue.reginald.Reginald;
 import com.rogue.reginald.command.Command;
+import com.rogue.reginald.listener.ListenerBase;
 import org.pircbotx.hooks.events.MessageEvent;
 
 /**
@@ -41,8 +42,4 @@ public class CommandListener extends ListenerBase {
         }
     }
 
-    @Override
-    public String getName() {
-        return "command";
-    }
 }

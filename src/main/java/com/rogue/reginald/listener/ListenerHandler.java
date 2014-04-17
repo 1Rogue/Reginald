@@ -18,16 +18,20 @@ package com.rogue.reginald.listener;
 
 import com.rogue.reginald.listener.listeners.*;
 import com.rogue.reginald.Reginald;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 
 /**
  *
- * @since
+ * @since 1.0.0
  * @author 1Rogue
- * @version
+ * @version 1.0.0
  */
 public class ListenerHandler {
     
@@ -38,7 +42,8 @@ public class ListenerHandler {
         this.project = project;
         
         ListenerBase[] list = new ListenerBase[] {
-            new CommandListener(this.project)
+            new CommandListener(this.project),
+            new TellListener(this.project),
         };
         
         for (ListenerBase l : list) {
@@ -52,6 +57,21 @@ public class ListenerHandler {
     
     public ListenerBase getListener(String name) {
         return this.listeners.get(name);
+    }
+
+    public <T extends ListenerBase> ListenerBase getListener(Class<T> listener) {
+        try {
+            Method m = listener.getDeclaredMethod("getName");
+            m.setAccessible(true);
+            return this.listeners.get((String) m.invoke(listener));
+        } catch (IllegalAccessException ex) {
+            this.project.getLogger().log(Level.SEVERE, "No allowed access to method!", ex);
+        } catch (InvocationTargetException ex) {
+            this.project.getLogger().log(Level.SEVERE, "Error invoking method!", ex);
+        } catch (NoSuchMethodException ex) {
+            this.project.getLogger().log(Level.SEVERE, "No method found!", ex);
+        }
+        return null;
     }
 
 }

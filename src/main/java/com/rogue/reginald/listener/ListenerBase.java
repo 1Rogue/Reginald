@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.rogue.reginald.listener.listeners;
+package com.rogue.reginald.listener;
 
 import com.rogue.reginald.Reginald;
 import org.pircbotx.hooks.ListenerAdapter;
@@ -33,6 +33,8 @@ public abstract class ListenerBase extends ListenerAdapter {
         this.project = project;
     }
 
-    public abstract String getName();
+    public String getName() {
+        return this.getClass().getCanonicalName();
+    }
 
 }

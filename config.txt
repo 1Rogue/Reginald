@@ -1,5 +1,5 @@
 username=bots
-password=id0ntkn0w
+password=password
 hostname=availo.esper.net
 port=6667
 nick=Fruitloop

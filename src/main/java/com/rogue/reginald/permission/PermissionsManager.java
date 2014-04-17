@@ -47,6 +47,9 @@ public class PermissionsManager {
         if (perm == null) {
             return true;
         }
+        if (perm.defaultTrue()) {
+            return true;
+        }
         List<Permission> perms = this.permissionMap.get(user.getNick());
         if (perms != null) {
             if (perms.contains(perm)) {
