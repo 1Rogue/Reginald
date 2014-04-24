@@ -17,11 +17,17 @@
 package com.rogue.reginald.listener.listeners;
 
 import com.rogue.reginald.Reginald;
+import com.rogue.reginald.command.CommandInfo;
+import com.rogue.reginald.command.commands.ShowTellsCommand;
+import com.rogue.reginald.config.ConfigValue;
 import com.rogue.reginald.listener.ListenerBase;
+import org.pircbotx.User;
+import org.pircbotx.hooks.events.ActionEvent;
 import org.pircbotx.hooks.events.MessageEvent;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Handles messaging notifications
@@ -38,8 +44,31 @@ public class TellListener extends ListenerBase {
         super(project);
     }
 
-    public void onMessage(MessageEvent event) {
+    public void onAction(ActionEvent event) {
+        if (!event.getMessage().equalsIgnoreCase(this.getShowTellsCommand())) {
+            this.handleNotify(event.getUser());
+        }
+    }
 
-}
+    public void onMessage(MessageEvent event) {
+        if (!event.getMessage().equalsIgnoreCase(this.getShowTellsCommand())) {
+            this.handleNotify(event.getUser());
+        }
+    }
+
+    private String getShowTellsCommand() {
+        return this.project.getConfig().getString(ConfigValue.COMMAND_PREFIX)
+                + ShowTellsCommand.class.getAnnotation(CommandInfo.class).name();
+    }
+
+    public void handleNotify(User user) {
+        if (this.project.getMessageHandler().hasMessages(user)) {
+            Long last = this.times.get(user.getNick());
+            if (last == null || TimeUnit.NANOSECONDS.toHours(System.nanoTime() - last) >= 1) {
+                user.send().notice("You have messages! Use " + this.getShowTellsCommand() + " to view them");
+                this.times.put(user.getNick(), System.nanoTime());
+            }
+        }
+    }
 
 }

@@ -18,6 +18,9 @@ package com.rogue.reginald;
 
 import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
+import org.pircbotx.exception.IrcException;
+
+import java.io.IOException;
 
 /**
  *
@@ -32,8 +35,8 @@ public class BotProxy extends PircBotX {
     }
 
     @Override
-    public void connect() {
-        this.connect();
+    public void connect() throws IOException, IrcException {
+        super.connect();
     }
 
 }

@@ -18,8 +18,11 @@ package com.rogue.reginald.listener.listeners;
 
 import com.rogue.reginald.Reginald;
 import com.rogue.reginald.command.Command;
+import com.rogue.reginald.config.ConfigValue;
 import com.rogue.reginald.listener.ListenerBase;
 import org.pircbotx.hooks.events.MessageEvent;
+import org.pircbotx.hooks.events.NoticeEvent;
+import org.pircbotx.hooks.events.PrivateMessageEvent;
 
 /**
  *
@@ -35,11 +38,27 @@ public class CommandListener extends ListenerBase {
 
     @Override
     public void onMessage(MessageEvent event) {
-        String prefix = this.project.getConfig().getValue("command-prefix");
-        if (event.getMessage().startsWith(prefix) && event.getMessage().length() == 1) {
+        String prefix = this.project.getConfig().getString(ConfigValue.COMMAND_PREFIX);
+        if (event.getMessage().startsWith(prefix) && event.getMessage().length() != 1) {
             this.project.getCommandHandler().dispatchCommand(
                     new Command(event.getUser(), event.getChannel(), event.getMessage()));
         }
     }
 
+    @Override
+    public void onPrivateMessage(PrivateMessageEvent event) {
+        String prefix = this.project.getConfig().getString(ConfigValue.COMMAND_PREFIX);
+        if (event.getMessage().startsWith(prefix) && event.getMessage().length() != 1) {
+            this.project.getCommandHandler().dispatchCommand(
+                    new Command(event.getUser(), null, event.getMessage()));
+        }
+    }
+
+    public void onNotice(NoticeEvent event) {
+        String prefix = this.project.getConfig().getString(ConfigValue.COMMAND_PREFIX);
+        if (event.getMessage().startsWith(prefix) && event.getMessage().length() != 1) {
+            this.project.getCommandHandler().dispatchCommand(
+                    new Command(event.getUser(), null, event.getMessage()));
+        }
+    }
 }

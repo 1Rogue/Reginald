@@ -23,54 +23,40 @@ import com.rogue.reginald.command.CommandInfo;
 import com.rogue.reginald.command.CommandStatus;
 import com.rogue.reginald.permission.Permission;
 
-import java.util.Arrays;
-
 /**
- * Creates a new message to deliver to an irc target
- *
- * @since 1.0.0
- * @author 1Rogue
- * @version 1.0.0
+ * Created by Spencer on 4/17/2014.
  */
-@CommandInfo(name = "tell")
-public class TellCommand extends CommandBase {
+@CommandInfo(name = "join")
+public class JoinCommand extends CommandBase {
 
-    public TellCommand(Reginald project) {
+    public JoinCommand(Reginald project) {
         super(project);
     }
 
     @Override
-        public CommandStatus execute(Command cmd, String[] args) {
-            if (args.length < 2) {
+    public CommandStatus execute(Command cmd, String[] args) {
+        if (args.length < 1) {
             return CommandStatus.BAD_ARGS;
         }
-        CommandStatus stat = this.verify(cmd.getUser(), Permission.TELL);
+        CommandStatus stat = this.verify(cmd.getUser(), Permission.JOIN);
         if (stat == CommandStatus.SUCCESS) {
-            String target = args[0];
-            args = Arrays.copyOfRange(args, 1, args.length);
-            StringBuilder sb = new StringBuilder();
-            boolean first = true;
-            for (String s : args) {
-                if (first) {
-                    first = false;
-                } else {
-                    sb.append(" ");
-                }
-                sb.append(s);
-            }
-            this.project.getMessageHandler().newMessage(cmd.getUser().getNick(), target, sb.toString(), cmd.getChannel().getName());
-            cmd.sendMessage("Message sent!");
+            this.project.getBot().sendIRC().joinChannel(args[0]);
         }
         return stat;
     }
 
     @Override
+    public String getUsage() {
+        return super.getUsage() + " <channel>";
+    }
+
+    @Override
     public String getName() {
-        return "tell";
+        return "join";
     }
 
     @Override
     public String info() {
-        return "Sends a message to an IRC recipient";
+        return "Allows the bot to join a channel";
     }
 }

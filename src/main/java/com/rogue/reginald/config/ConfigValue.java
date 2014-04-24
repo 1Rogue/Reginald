@@ -14,35 +14,38 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.rogue.reginald.permission;
+package com.rogue.reginald.config;
+
+import java.util.ArrayList;
 
 /**
- *
- * @since 1.0.0
- * @author 1Rogue
- * @version 1.0.0
+ * Created by Spencer on 4/24/2014.
  */
-public enum Permission {
+public enum ConfigValue {
 
-    NICK("nick", false),
-    TELL("tell", true),
-    SHOW_TELLS("showtell", true),
-    PART("part", false),
-    JOIN("join", false);
-    
-    private final String node;
-    private final boolean def;
-    
-    private Permission(String node, boolean def) {
-        this.node = node;
+    USERNAME("info.username", "Reginald"),
+    PASSWORD("info.password", "password"),
+    HOSTNAME("info.hostname", "irc.esper.net"),
+    PORT("info.port", 6667),
+    NICK("info.nick", "Reginald"),
+    CHANNELS("info.channels", new ArrayList<>()),
+    COMMAND_PREFIX("command-prefix", "$"),
+    ;
+
+    private final String path;
+    private final Object def;
+
+    private ConfigValue(String path, Object def) {
+        this.path = path;
         this.def = def;
     }
-    
-    public String getNode() {
-        return this.node;
+
+    public String getPath() {
+        return this.path;
     }
 
-    public boolean defaultTrue() {
+    public Object getDefault() {
         return this.def;
     }
+
 }

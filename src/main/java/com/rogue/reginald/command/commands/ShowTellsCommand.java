@@ -3,6 +3,7 @@ package com.rogue.reginald.command.commands;
 import com.rogue.reginald.Reginald;
 import com.rogue.reginald.command.Command;
 import com.rogue.reginald.command.CommandBase;
+import com.rogue.reginald.command.CommandInfo;
 import com.rogue.reginald.command.CommandStatus;
 import com.rogue.reginald.permission.Permission;
 
@@ -13,6 +14,7 @@ import com.rogue.reginald.permission.Permission;
  * @author 1Rogue
  * @version 1.0.0
  */
+@CommandInfo(name = "showtells")
 public class ShowTellsCommand extends CommandBase {
 
     public ShowTellsCommand(Reginald project) {

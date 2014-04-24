@@ -17,16 +17,21 @@
 package com.rogue.reginald;
 
 import com.rogue.reginald.command.CommandHandler;
+import com.rogue.reginald.config.ConfigValue;
 import com.rogue.reginald.config.ConfigurationLoader;
 import com.rogue.reginald.listener.ListenerHandler;
 import com.rogue.reginald.listener.ListenerBase;
 import com.rogue.reginald.message.MessageHandler;
 import com.rogue.reginald.permission.PermissionsManager;
+
+import java.io.IOException;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
+import org.pircbotx.exception.IrcException;
 
 /**
  *
@@ -66,28 +71,27 @@ public final class Reginald extends Start {
 
         this.command = new CommandHandler(this);
 
-        final Map<String, String> conf;
         Configuration c;
-        synchronized (conf = this.config.getConfigMap()) {
-            Configuration.Builder build = new Configuration.Builder<>()
-                    .setName(conf.get("nick"))
-                    .setLogin(conf.get("uesrname"))
-                    .setServerHostname(conf.get("hostname"))
-                    .setServerPort(Integer.parseInt(conf.get("port")))
-                    .setNickservPassword(conf.get("password"))
-                    .setAutoNickChange(true);
-            for (String chan : conf.get("defaultChans").split(",")) {
-                build.addAutoJoinChannel(chan);
-            }
-            for (ListenerBase base : this.getListenerHandler().getListeners()) {
-                build.addListener(base);
-            }
-            c = build.buildConfiguration();
-        }
+        Configuration.Builder build = new Configuration.Builder<>()
+                .setName(this.config.getString(ConfigValue.NICK))
+                .setLogin(this.config.getString(ConfigValue.USERNAME))
+                .setServerHostname(this.config.getString(ConfigValue.HOSTNAME))
+                .setServerPort(this.config.getInt(ConfigValue.PORT, 6667))
+                .setNickservPassword(this.config.getString(ConfigValue.PASSWORD))
+                .setAutoNickChange(true);
+        this.config.getStringList(ConfigValue.CHANNELS).forEach(build::addAutoJoinChannel);
+        this.getListenerHandler().getListeners().forEach(build::addListener);
+        c = build.buildConfiguration();
 
         this.bot = new BotProxy(c);
 
-        this.bot.connect();
+        try {
+            this.bot.connect();
+        } catch (IOException ex) {
+            this.getLogger().log(Level.SEVERE, "I/O Error upon connecting!", ex);
+        } catch (IrcException ex) {
+            this.getLogger().log(Level.SEVERE, "IRC Exception upon connecting!", ex);
+        }
 
         Runtime.getRuntime().addShutdownHook(new Thread() {
 

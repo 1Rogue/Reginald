@@ -41,7 +41,7 @@ public final class Command {
         this.user = user;
         this.chan = chan;
         String[] rawArgs = this.getSplitArguments(rawCommand);
-        this.name = rawArgs[0];
+        this.name = rawArgs[0].substring(1, rawArgs[0].length());
         if (rawArgs.length > 1) {
             rawArgs = Arrays.copyOfRange(rawArgs, 1, rawArgs.length);
             List<String> list = Arrays.asList(rawArgs);
@@ -103,10 +103,10 @@ public final class Command {
     }
     
     public void sendMessage(String message) {
-        if (this.isPublic()) {
-            this.getUser().send().notice(message);
+        if (this.isPublic() && this.getChannel() != null) {
+            this.getChannel().send().message(this.getUser().getNick() + ": " + message);
         } else {
-            this.getChannel().send().message(this.getUser() + ": " + message);
+            this.getUser().send().notice(message);
         }
     }
 

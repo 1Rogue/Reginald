@@ -17,17 +17,14 @@
 package com.rogue.reginald.config;
 
 import com.rogue.reginald.Reginald;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.Collections;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -40,67 +37,102 @@ import java.util.logging.Logger;
 public class ConfigurationLoader {
 
     private final Reginald project;
-    private final File config = new File("config.txt");
-    private final Map<String, String> values = new ConcurrentHashMap();
+    private final File config = new File("config.json");
+    private JSONObject root;
 
     public ConfigurationLoader(Reginald project) {
-        
         this.project = project;
 
-        this.loadFile();
-        this.verifyValues();
+        try {
+            this.loadConfig();
+        } catch (IOException ex) {
+            Logger.getLogger(ConfigurationLoader.class.getName()).log(Level.SEVERE, "Error reading JSON file!", ex);
+        } catch (ParseException ex) {
+            Logger.getLogger(ConfigurationLoader.class.getName()).log(Level.SEVERE, "Error parsing JSON file!", ex);
+        }
     }
 
-    private void loadFile() {
-        try {
-            if (!config.exists()) {
-                try {
-                    this.saveResource("config.txt");
-                } catch (IOException e) {
-                    this.config.createNewFile();
-                }
+    private void loadConfig() throws IOException, ParseException {
+        if (!this.config.exists()) {
+            this.saveResource("config.json");
+        }
+        System.out.println(this.config.getAbsolutePath());
+        JSONParser parser = new JSONParser();
+        this.root = (JSONObject) parser.parse(new FileReader(this.config));
+        for (ConfigValue val : ConfigValue.values()) {
+            if (!this.isSet(val)) {
+                this.set(val, val.getDefault());
             }
-            FileInputStream fis = new FileInputStream(config);
-            InputStreamReader isr = new InputStreamReader(fis);
-            String line;
-            String[] val;
-            if (isr.ready()) {
-                BufferedReader br = new BufferedReader(isr);
-                while (br.ready()) {
-                    line = br.readLine();
-                    val = line.split("=");
-                    if (val.length == 2) {
-                        if (!val[1].isEmpty()) {
-                            synchronized (values) {
-                                values.put(val[0], val[1]);
-                            }
-                        }
-                    } else {
-                        System.out.println("Invalid configuration line found, skipping...");
-                    }
-                }
-            }
-        } catch (IOException ex) {
-            Logger.getLogger(ConfigurationLoader.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-    private void verifyValues() {
-        synchronized (this.values) {
-            if (!this.values.containsKey("username")) { this.values.put("username", "Fruitloop"); }
-            if (!this.values.containsKey("password")) { this.values.put("password", "password"); }
-            if (!this.values.containsKey("hostname")) { this.values.put("hostname", "irc.esper.net"); }
-            if (!this.values.containsKey("port")) { this.values.put("port", "6667"); }
-            if (!this.values.containsKey("nick")) { this.values.put("nick", "Fruitloop"); }
-            if (!this.values.containsKey("defaultChans")) { this.values.put("defaultChans", ""); }
-            if (!this.values.containsKey("command-prefix")) { this.values.put("command-prefix", "$"); }
+
+    public void set(ConfigValue path, Object value) {
+        String[] ladder = path.getPath().split("\\.");
+        JSONObject container = this.root;
+        for (int i = 0; i < ladder.length - 1; i++) {
+            JSONObject temp = (JSONObject) container.get(ladder[i]);
+            if (temp == null) {
+                container.put(ladder[i], new JSONObject());
+            }
+            container = (JSONObject) container.get(ladder[i]);
         }
-        // add other defaults
+        container.put(ladder[ladder.length - 1], value);
+    };
+
+    public Object get(ConfigValue path) {
+        String[] ladder = path.getPath().split("\\.");
+        JSONObject container = this.root;
+        for (int i = 0; i < ladder.length - 1; i++) {
+            container = (JSONObject) container.get(ladder[i]);
+            if (container == null) {
+                return null;
+            }
+        }
+        return container.get(ladder[ladder.length - 1]);
     }
-    
+
+    public boolean isSet(ConfigValue path) {
+        return this.get(path) != null;
+    }
+
+    public String getString(ConfigValue path) {
+        return this.getString(path, null);
+    }
+
+    public String getString(ConfigValue path, String def) {
+        Object val = this.get(path);
+        return val == null ? def : val.toString();
+    }
+
+    public int getInt(ConfigValue path) {
+        return this.getInt(path, -1);
+    }
+
+    public int getInt(ConfigValue path, int def) {
+        Object val = this.get(path);
+        return val == null ? def : Integer.valueOf(val.toString());
+    }
+
+    public List<String> getStringList(ConfigValue path) {
+        List<?> str = this.getList(path);
+        List<String> back = new ArrayList<>();
+        str.stream().forEach((s) -> back.add(s.toString()));
+        return back;
+    }
+
+    public List<?> getList(ConfigValue path) {
+        Object obj = this.get(path);
+        List<Object> back = new ArrayList<>();
+        if (obj != null) {
+            back.addAll((JSONArray) obj);
+        }
+        return back;
+    }
+
     private void saveResource(String name) throws IOException, FileNotFoundException {
         File file = new File(name);
-        InputStream is = ConfigurationLoader.class.getResourceAsStream("config.txt");
+        System.out.println(String.format("Name = '%s', saving...", name));
+        InputStream is = ConfigurationLoader.class.getResourceAsStream(name);
         if (is == null) {
             throw new FileNotFoundException();
         }
@@ -114,16 +146,6 @@ public class ConfigurationLoader {
             fos.write(buffer, 0, len);
         }
 
-    }
-    
-    public String getValue(String key) {
-        synchronized (this.values) {
-            return this.values.get(key);
-        }
-    }
-    
-    public Map<String, String> getConfigMap() {
-        return Collections.unmodifiableMap(this.values);
     }
     
     public void save(){} //TODO: write

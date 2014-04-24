@@ -1,0 +1,13 @@
+{
+    "info": {
+        "username": "bots",
+        "password": "password",
+        "hostname": "irc.freenode.net",
+        "port": 6667,
+        "nick": "Reginald",
+        "channels": [
+            "#Rogue_"
+        ]
+    },
+    "command-prefix": "$"
+}

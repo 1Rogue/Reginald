@@ -42,7 +42,7 @@ public class MessageHandler {
     }
 
     public void newMessage(String sender, String target, String message, String channel) {
-        this.getMessageList(target).add(new Message(sender, target, message, channel));
+        this.getMessageList(target.toLowerCase()).add(new Message(sender, target, message, channel));
     }
 
     private List<Message> getMessageList(String name) {
@@ -55,18 +55,26 @@ public class MessageHandler {
     }
 
     public List<Message> readMessages(User user) {
-        List<Message> curr = this.getMessageList(user.getNick().toLowerCase());
+        List<Message> curr = this.getMessageList(user.getNick());
         if (curr.isEmpty()) {
             user.send().notice("You have no tells at this time");
             return new ArrayList<>();
         }
-        List<Message> back = new ArrayList<>();
-        Collections.copy(back, curr);
+        List<Message> back = new ArrayList<>(curr.size());
+        try { // Temporarily wrapped, seems to have been causing issues
+            Collections.copy(back, curr);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
         for (Message m : curr) {
             user.send().notice(m.toString());
         }
         curr.clear();
         return back;
+    }
+
+    public boolean hasMessages(User user) {
+        return !this.getMessageList(user.getNick()).isEmpty();
     }
 
 }
