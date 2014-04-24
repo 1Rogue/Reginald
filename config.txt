@@ -1,6 +1,7 @@
 username=bots
-password=password
-hostname=availo.esper.net
+password=banana
+hostname=irc.freenode.net
 port=6667
-nick=Fruitloop
-defaultChans=#Rogue,#Rogue-github
+nick=TempNameForBot
+defaultChans=#Rogue_
+command-prefix=$
