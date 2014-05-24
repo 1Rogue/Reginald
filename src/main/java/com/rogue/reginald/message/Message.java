@@ -98,10 +98,11 @@ public class Message {
      * Absolutely disgusting method of retrieving the largest non-zero times
      * difference in a nanosecond period. Forgive me for my sins
      *
-     * @param diff The difference in nanoseconds between two points
-     * @return A new {@link TimePoint} representing the largest represented time
      * @version 1.0.0
      * @since 1.0.0
+     *
+     * @param diff The difference in nanoseconds between two points
+     * @return A new {@link TimePoint} representing the largest represented time
      */
     private TimePoint getTimePoint(long diff) {
         if (diff < 0) {
