@@ -2,7 +2,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.rogue</groupId>
+    <groupId>ninja.rogue</groupId>
     <artifactId>Reginald</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
@@ -57,7 +57,7 @@
                             <finalName>${project.name}-${project.version}</finalName>
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>com.rogue.reginald.Start</mainClass>
+                                    <mainClass>ninja.rogue.reginald.Start</mainClass>
                                 </transformer>
                             </transformers>
                             <filters>
