@@ -57,7 +57,7 @@ public class TellListener extends ListenerBase {
     }
 
     private String getShowTellsCommand() {
-        return this.project.getConfig().getString(ConfigValue.COMMAND_PREFIX)
+        return ConfigValue.COMMAND_PREFIX.as(String.class)
                 + ShowTellsCommand.class.getAnnotation(CommandInfo.class).name();
     }
 

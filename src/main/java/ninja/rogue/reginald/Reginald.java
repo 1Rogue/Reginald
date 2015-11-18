@@ -18,13 +18,13 @@ package ninja.rogue.reginald;
 
 import ninja.rogue.reginald.command.CommandHandler;
 import ninja.rogue.reginald.config.ConfigValue;
-import ninja.rogue.reginald.config.ConfigurationLoader;
 import ninja.rogue.reginald.listener.ListenerHandler;
 import ninja.rogue.reginald.message.MessageHandler;
 import ninja.rogue.reginald.permission.PermissionsManager;
 
 import java.io.IOException;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -41,7 +41,6 @@ import org.pircbotx.exception.IrcException;
 public final class Reginald extends Start {
 
     private final BotProxy bot;
-    private final ConfigurationLoader config;
     private final ListenerHandler listener;
     private final CommandHandler command;
     private final PermissionsManager permissions;
@@ -59,8 +58,6 @@ public final class Reginald extends Start {
         //onLoad
         this.log = Logger.getLogger(this.getClass().getName());
 
-        this.config = new ConfigurationLoader(this);
-
         //onEnable
         this.permissions = new PermissionsManager(this);
 
@@ -72,13 +69,13 @@ public final class Reginald extends Start {
 
         Configuration c;
         Configuration.Builder build = new Configuration.Builder<>()
-                .setName(this.config.getString(ConfigValue.NICK))
-                .setLogin(this.config.getString(ConfigValue.USERNAME))
-                .setServerHostname(this.config.getString(ConfigValue.HOSTNAME))
-                .setServerPort(this.config.getInt(ConfigValue.PORT, 6667))
-                .setNickservPassword(this.config.getString(ConfigValue.PASSWORD))
+                .setName(ConfigValue.NICK.as(String.class))
+                .setLogin(ConfigValue.USERNAME.as(String.class))
+                .setServerHostname(ConfigValue.HOSTNAME.as(String.class))
+                .setServerPort(ConfigValue.PORT.as(Integer.class))
+                .setNickservPassword(ConfigValue.PASSWORD.as(String.class))
                 .setAutoNickChange(true);
-        this.config.getStringList(ConfigValue.CHANNELS).forEach(build::addAutoJoinChannel);
+        ConfigValue.CHANNELS.as(List.class, String.class).forEach(build::addAutoJoinChannel);
         this.getListenerHandler().getListeners().forEach(build::addListener);
         c = build.buildConfiguration();
 
@@ -96,9 +93,12 @@ public final class Reginald extends Start {
 
             @Override
             public void run() {
-                config.save();
-            }
-
+                try {
+                    ConfigValue.CHANNELS.save();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }7
         });
 
     }
@@ -109,10 +109,6 @@ public final class Reginald extends Start {
 
     public PircBotX getBot() {
         return this.bot;
-    }
-    
-    public ConfigurationLoader getConfig() {
-        return this.config;
     }
     
     public CommandHandler getCommandHandler() {

@@ -16,12 +16,16 @@
  */
 package ninja.rogue.reginald.config;
 
+import com.codelanx.commons.config.ConfigFile;
+import com.codelanx.commons.config.DataHolder;
+import com.codelanx.commons.data.types.Json;
+
 import java.util.ArrayList;
 
 /**
  * Created by Spencer on 4/24/2014.
  */
-public enum ConfigValue {
+public enum ConfigValue implements ConfigFile {
 
     USERNAME("info.username", "Reginald"),
     PASSWORD("info.password", "password"),
@@ -32,6 +36,7 @@ public enum ConfigValue {
     COMMAND_PREFIX("command-prefix", "$"),
     ;
 
+    private static final DataHolder<Json> DATA = new DataHolder<>(Json.class);
     private final String path;
     private final Object def;
 
@@ -48,4 +53,8 @@ public enum ConfigValue {
         return this.def;
     }
 
+    @Override
+    public DataHolder<Json> getData() {
+        return DATA;
+    }
 }

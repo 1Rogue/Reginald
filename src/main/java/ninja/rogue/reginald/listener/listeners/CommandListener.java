@@ -20,9 +20,13 @@ import ninja.rogue.reginald.Reginald;
 import ninja.rogue.reginald.command.Command;
 import ninja.rogue.reginald.config.ConfigValue;
 import ninja.rogue.reginald.listener.ListenerBase;
+import org.pircbotx.Channel;
+import org.pircbotx.User;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.NoticeEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
+import org.pircbotx.hooks.types.GenericChannelUserEvent;
+import org.pircbotx.hooks.types.GenericMessageEvent;
 
 /**
  *
@@ -32,33 +36,30 @@ import org.pircbotx.hooks.events.PrivateMessageEvent;
  */
 public class CommandListener extends ListenerBase {
 
+    private static final String PREFIX = ConfigValue.COMMAND_PREFIX.as(String.class);
+
     public CommandListener(Reginald project) {
         super(project);
     }
 
     @Override
     public void onMessage(MessageEvent event) {
-        String prefix = this.project.getConfig().getString(ConfigValue.COMMAND_PREFIX);
-        if (event.getMessage().startsWith(prefix) && event.getMessage().length() != 1) {
-            this.project.getCommandHandler().dispatchCommand(
-                    new Command(event.getUser(), event.getChannel(), event.getMessage()));
-        }
+        this.onCommand(event.getMessage(), event.getUser(), event.getChannel());
     }
 
     @Override
     public void onPrivateMessage(PrivateMessageEvent event) {
-        String prefix = this.project.getConfig().getString(ConfigValue.COMMAND_PREFIX);
-        if (event.getMessage().startsWith(prefix) && event.getMessage().length() != 1) {
-            this.project.getCommandHandler().dispatchCommand(
-                    new Command(event.getUser(), null, event.getMessage()));
-        }
+        this.onCommand(event.getMessage(), event.getUser(), null);
     }
 
     public void onNotice(NoticeEvent event) {
-        String prefix = this.project.getConfig().getString(ConfigValue.COMMAND_PREFIX);
-        if (event.getMessage().startsWith(prefix) && event.getMessage().length() != 1) {
+        this.onCommand(event.getMessage(), event.getUser(), event.getChannel());
+    }
+
+    private <z> void onCommand(String message, User user, Channel chan) {
+        if (message.startsWith(PREFIX) && message.length() != 1) {
             this.project.getCommandHandler().dispatchCommand(
-                    new Command(event.getUser(), null, event.getMessage()));
+                    new Command(user, chan, message));
         }
     }
 }
