@@ -25,8 +25,6 @@ import org.pircbotx.User;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.NoticeEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
-import org.pircbotx.hooks.types.GenericChannelUserEvent;
-import org.pircbotx.hooks.types.GenericMessageEvent;
 
 /**
  *
@@ -52,11 +50,12 @@ public class CommandListener extends ListenerBase {
         this.onCommand(event.getMessage(), event.getUser(), null);
     }
 
+    @Override
     public void onNotice(NoticeEvent event) {
         this.onCommand(event.getMessage(), event.getUser(), event.getChannel());
     }
 
-    private <z> void onCommand(String message, User user, Channel chan) {
+    private void onCommand(String message, User user, Channel chan) {
         if (message.startsWith(PREFIX) && message.length() != 1) {
             this.project.getCommandHandler().dispatchCommand(
                     new Command(user, chan, message));
